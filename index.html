@@ -1,43 +1,4 @@
-<script type="text/javascript">
-        var gk_isXlsx = false;
-        var gk_xlsxFileLookup = {};
-        var gk_fileData = {};
-        function filledCell(cell) {
-          return cell !== '' && cell != null;
-        }
-        function loadFileData(filename) {
-        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
-            try {
-                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
-                var firstSheetName = workbook.SheetNames[0];
-                var worksheet = workbook.Sheets[firstSheetName];
-
-                // Convert sheet to JSON to filter blank rows
-                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
-                // Filter out blank rows (rows where all cells are empty, null, or undefined)
-                var filteredData = jsonData.filter(row => row.some(filledCell));
-
-                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
-                var headerRowIndex = filteredData.findIndex((row, index) =>
-                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
-                );
-                // Fallback
-                if (headerRowIndex === -1 || headerRowIndex > 25) {
-                  headerRowIndex = 0;
-                }
-
-                // Convert filtered JSON back to CSV
-                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
-                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
-                return csv;
-            } catch (e) {
-                console.error(e);
-                return "";
-            }
-        }
-        return gk_fileData[filename] || "";
-        }
-        </script><!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -136,7 +97,7 @@
         }
         .services-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 20px;
             margin-top: 20px;
         }
@@ -513,7 +474,7 @@
         <div class="services-section" id="services-section">
             <h2 style="text-align: center; color: #1A73E8; margin-bottom: 20px;">خدماتنا</h2>
             <p style="text-align: center; color: #718096; margin-bottom: 30px;">
-                نقدم خدمات إخراج التابلت مؤقتًا أو نهائيًا مع استشارات مجانية لحل المشكلات الفنية
+                نقدم خدمات إخراج التابلت مؤقتًا أو نهائيًا مع استشارات مجانية وحلول دخول النظام
             </p>
             <div style="text-align: center; margin-bottom: 20px;">
                 <a href="https://www.facebook.com/share/1AgybNEAMh/?mibextid=wwXIfr" target="_blank" class="facebook-btn" onclick="handleFacebookClick()">احصل على كود الخصم من صفحتنا على الفيسبوك</a>
@@ -522,13 +483,13 @@
                 <div class="service-card" onclick="selectService(1)">
                     <h3>إخراج مؤقت</h3>
                     <p>للطلاب الذين يحتاجون إخراج التابلت لفترة محدودة</p>
-                    <div class="service-price">130 جنيه</div>
+                    <div class="service-price">80 جنيه</div>
                     <div class="service-description">صالح لمدة محدودة</div>
                 </div>
                 <div class="service-card" onclick="selectService(2)">
                     <h3>إخراج نهائي</h3>
                     <p>للطلاب الذين يحتاجون إخراج التابلت بشكل دائم</p>
-                    <div class="service-price">150 جنيه</div>
+                    <div class="service-price">50 جنيه</div>
                     <div class="service-description">حل دائم ومضمون</div>
                 </div>
                 <div class="service-card" onclick="selectService(3)">
@@ -536,6 +497,12 @@
                     <p>للاستفسار عن أي مشكلة فنية في التابلت</p>
                     <div class="service-price">مجاناً</div>
                     <div class="service-description">دعم فني متخصص</div>
+                </div>
+                <div class="service-card" onclick="selectService(4)">
+                    <h3>الدخول للنظام</h3>
+                    <p>للطلاب الذين يحتاجون إعادة الدخول لنظام التابلت</p>
+                    <div class="service-price">30 جنيه</div>
+                    <div class="service-description">حل سريع وآمن</div>
                 </div>
             </div>
         </div>
@@ -550,7 +517,7 @@
                 <h3>ملخص الخدمة</h3>
                 <div class="summary-item">
                     <span id="service-name">إخراج التابلت (مؤقت)</span>
-                    <span id="service-price-display">130 جنيه</span>
+                    <span id="service-price-display">80 جنيه</span>
                 </div>
                 <div class="summary-item" id="service-discount-summary" style="display:none;">
                     <span id="service-discount-text">الخصم (كود: mo218)</span>
@@ -558,7 +525,7 @@
                 </div>
                 <div class="summary-total">
                     <span>المجموع النهائي:</span>
-                    <span id="service-total">130 جنيه</span>
+                    <span id="service-total">80 جنيه</span>
                 </div>
             </div>
             <form id="serviceOrderForm">
@@ -680,9 +647,9 @@
         let selectedService = null;
         let serviceDiscountApplied = false;
         const validDiscountCode = "mo218";
-        const servicePrices = { 1: 130, 2: 150, 3: 0 };
-        const serviceNames = { 1: "إخراج مؤقت", 2: "إخراج نهائي", 3: "استشارة مجانية" };
-        const whatsappNumber = "+201029149379"; // رقمك الفعلي
+        const servicePrices = { 1: 80, 2: 50, 3: 0, 4: 30 }; // Updated prices: 80, 50, 0, 30
+        const serviceNames = { 1: "إخراج مؤقت", 2: "إخراج نهائي", 3: "استشارة مجانية", 4: "الدخول للنظام" };
+        const whatsappNumber = "+201029149379"; // Your actual number
 
         // Function to validate WhatsApp number
         function validatePhoneNumber(phone) {
@@ -740,7 +707,7 @@
                 const serviceData = {
                     serviceName: serviceNames[selectedService],
                     servicePrice: servicePrices[selectedService],
-                    finalPrice: serviceDiscountApplied ? servicePrices[selectedService] * 0.5 : servicePrices[selectedService],
+                    finalPrice: serviceDiscountApplied ? servicePrices[selectedService] * 0.7 : servicePrices[selectedService], // 30% discount
                     fullName: document.getElementById('serviceFullName').value,
                     whatsapp: document.getElementById('serviceWhatsapp').value,
                     governorate: document.getElementById('serviceGovernorate').value,
@@ -853,14 +820,14 @@
             const discountMessage = document.getElementById('serviceDiscountMessage');
             if (discountCode === validDiscountCode && selectedService !== 3) {
                 serviceDiscountApplied = true;
-                const discountAmount = servicePrices[selectedService] * 0.5;
-                const finalPrice = servicePrices[selectedService] * 0.5;
-                discountMessage.textContent = `تم تطبيق خصم 50% (${discountAmount} جنيه) بنجاح!`;
+                const discountAmount = servicePrices[selectedService] * 0.3; // 30% discount
+                const finalPrice = servicePrices[selectedService] * 0.7; // 70% of original price
+                discountMessage.textContent = `تم تطبيق خصم 30% (${discountAmount.toFixed(2)} جنيه) بنجاح!`;
                 discountMessage.className = 'discount-message discount-success';
                 document.getElementById('service-discount-summary').style.display = 'flex';
                 document.getElementById('service-discount-text').textContent = `الخصم (كود: ${validDiscountCode})`;
-                document.getElementById('service-discount-amount').textContent = `-${discountAmount} جنيه`;
-                document.getElementById('service-total').textContent = `${finalPrice} جنيه`;
+                document.getElementById('service-discount-amount').textContent = `-${discountAmount.toFixed(2)} جنيه`;
+                document.getElementById('service-total').textContent = `${finalPrice.toFixed(2)} جنيه`;
             } else if (discountCode === '') {
                 discountMessage.textContent = 'يرجى إدخال كود الخصم';
                 discountMessage.className = 'discount-message discount-error';
