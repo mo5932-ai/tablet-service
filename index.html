@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خدمات تابلت الثانوية العامة</title>
+    <title>خدمات إخراج التابلت</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
@@ -466,8 +466,8 @@
         <!-- Header -->
         <div class="header">
             <button class="theme-toggle" id="themeToggle">🕶</button>
-            <h1>خدمات تابلت الثانويه</h1>
-            <p>بوابتك لجميع خدمات تابلت الثانوية في أسرع وقت</p>
+            <h1>خدمات إخراج التابلت</h1>
+            <p>حلول متكاملة لإخراج تابلت الوزارة من النظام بسهولة وسرعة</p>
         </div>
 
         <!-- Services Section -->
@@ -670,7 +670,7 @@
                 message += `*الاسم:* ${data.fullName}\n`;
                 message += `*رقم الواتساب:* ${data.whatsapp}\n`;
                 message += `*المحافظة:* ${data.governorate}\n`;
-                message += `*وجود حاسوب:* ${data.hasComputer}\n`; // Changed from reason
+                message += `*وجود حاسوب:* ${data.hasComputer}\n`;
                 message += `*كود الخصم:* ${data.discountCode}\n`;
             } else { // Consultation
                 message += `*الخدمة:* استشارة مجانية\n`;
@@ -715,7 +715,7 @@
                     fullName: document.getElementById('serviceFullName').value,
                     whatsapp: document.getElementById('serviceWhatsapp').value,
                     governorate: document.getElementById('serviceGovernorate').value,
-                    hasComputer: document.getElementById('serviceHasComputer').value, // New field
+                    hasComputer: document.getElementById('serviceHasComputer').value,
                     discountCode: serviceDiscountApplied ? validDiscountCode : 'لا يوجد'
                 };
 
@@ -726,13 +726,14 @@
                     return;
                 }
 
+                // Email template matching the provided HTML
                 emailjs.send("service_tn1vzso", "template_w6a96vy", {
                     service_type: serviceData.serviceName,
                     price: serviceData.finalPrice,
                     customer_name: serviceData.fullName,
                     whatsapp: serviceData.whatsapp,
                     governorate: serviceData.governorate,
-                    has_computer: serviceData.hasComputer, // Changed from reason
+                    reason: serviceData.hasComputer, // Using 'reason' to match the email template
                     discount_code: serviceData.discountCode,
                     to_email: "momosalahy567@gmail.com"
                 }).then(function(response) {
