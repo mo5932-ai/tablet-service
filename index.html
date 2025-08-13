@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>خدمات إخراج التابلت</title>
+    <title>خدمات تابلت الثانوية العامة</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <style>
@@ -466,8 +466,8 @@
         <!-- Header -->
         <div class="header">
             <button class="theme-toggle" id="themeToggle">🕶</button>
-            <h1>خدمات إخراج التابلت</h1>
-            <p>حلول متكاملة لإخراج تابلت الوزارة من النظام بسهولة وسرعة</p>
+            <h1>خدمات تابلت الثانويه</h1>
+            <p>بوابتك لجميع خدمات تابلت الثانوية في أسرع وقت</p>
         </div>
 
         <!-- Services Section -->
@@ -492,17 +492,17 @@
                     <div class="service-price">50 جنيه</div>
                     <div class="service-description">حل دائم ومضمون</div>
                 </div>
-                <div class="service-card" onclick="selectService(3)">
-                    <h3>استشارة مجانية</h3>
-                    <p>للاستفسار عن أي مشكلة فنية في التابلت</p>
-                    <div class="service-price">مجاناً</div>
-                    <div class="service-description">دعم فني متخصص</div>
-                </div>
                 <div class="service-card" onclick="selectService(4)">
                     <h3>الدخول للنظام</h3>
                     <p>للطلاب الذين يحتاجون إعادة الدخول لنظام التابلت</p>
                     <div class="service-price">30 جنيه</div>
                     <div class="service-description">حل سريع وآمن</div>
+                </div>
+                <div class="service-card" onclick="selectService(3)">
+                    <h3>استشارة مجانية</h3>
+                    <p>للاستفسار عن أي مشكلة فنية في التابلت</p>
+                    <div class="service-price">مجاناً</div>
+                    <div class="service-description">دعم فني متخصص</div>
                 </div>
             </div>
         </div>
@@ -578,8 +578,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>سبب طلب الإخراج *</label>
-                    <textarea id="serviceReason" rows="3" required placeholder="برجاء توضيح سبب طلبك للإخراج"></textarea>
+                    <label>هل يوجد لديك جهاز كومبيوتر أو لابتوب؟ *</label>
+                    <select id="serviceHasComputer" required>
+                        <option value="">اختر الخيار</option>
+                        <option value="نعم">نعم</option>
+                        <option value="لا">لا</option>
+                    </select>
                 </div>
                 <button type="submit" class="btn">تأكيد طلب الخدمة</button>
             </form>
@@ -647,9 +651,9 @@
         let selectedService = null;
         let serviceDiscountApplied = false;
         const validDiscountCode = "mo218";
-        const servicePrices = { 1: 80, 2: 50, 3: 0, 4: 30 }; // Updated prices: 80, 50, 0, 30
-        const serviceNames = { 1: "إخراج مؤقت", 2: "إخراج نهائي", 3: "استشارة مجانية", 4: "الدخول للنظام" };
-        const whatsappNumber = "+201029149379"; // Your actual number
+        const servicePrices = { 1: 80, 2: 50, 4: 30, 3: 0 };
+        const serviceNames = { 1: "إخراج مؤقت", 2: "إخراج نهائي", 4: "الدخول للنظام", 3: "استشارة مجانية" };
+        const whatsappNumber = "+201029149379";
 
         // Function to validate WhatsApp number
         function validatePhoneNumber(phone) {
@@ -666,7 +670,7 @@
                 message += `*الاسم:* ${data.fullName}\n`;
                 message += `*رقم الواتساب:* ${data.whatsapp}\n`;
                 message += `*المحافظة:* ${data.governorate}\n`;
-                message += `*سبب الطلب:* ${data.reason}\n`;
+                message += `*وجود حاسوب:* ${data.hasComputer}\n`; // Changed from reason
                 message += `*كود الخصم:* ${data.discountCode}\n`;
             } else { // Consultation
                 message += `*الخدمة:* استشارة مجانية\n`;
@@ -675,7 +679,7 @@
                 message += `*الاستفسار:* ${data.question}\n`;
             }
             message += `\n*ملاحظات:* يرجى التواصل مع العميل لتأكيد الطلب.`;
-            return encodeURIComponent(message); // Encode the message for URL
+            return encodeURIComponent(message);
         }
 
         // Initialize page
@@ -707,15 +711,14 @@
                 const serviceData = {
                     serviceName: serviceNames[selectedService],
                     servicePrice: servicePrices[selectedService],
-                    finalPrice: serviceDiscountApplied ? servicePrices[selectedService] * 0.7 : servicePrices[selectedService], // 30% discount
+                    finalPrice: serviceDiscountApplied ? servicePrices[selectedService] * 0.7 : servicePrices[selectedService],
                     fullName: document.getElementById('serviceFullName').value,
                     whatsapp: document.getElementById('serviceWhatsapp').value,
                     governorate: document.getElementById('serviceGovernorate').value,
-                    reason: document.getElementById('serviceReason').value,
+                    hasComputer: document.getElementById('serviceHasComputer').value, // New field
                     discountCode: serviceDiscountApplied ? validDiscountCode : 'لا يوجد'
                 };
 
-                // Validate WhatsApp number
                 if (!validatePhoneNumber(serviceData.whatsapp)) {
                     alert('رقم الواتساب غير صحيح. يرجى إدخال رقم يبدأ بـ 01 ويتكون من 11 رقمًا.');
                     submitButton.textContent = 'تأكيد طلب الخدمة';
@@ -723,19 +726,17 @@
                     return;
                 }
 
-                // Send to EmailJS
                 emailjs.send("service_tn1vzso", "template_w6a96vy", {
                     service_type: serviceData.serviceName,
                     price: serviceData.finalPrice,
                     customer_name: serviceData.fullName,
                     whatsapp: serviceData.whatsapp,
                     governorate: serviceData.governorate,
-                    reason: serviceData.reason,
+                    has_computer: serviceData.hasComputer, // Changed from reason
                     discount_code: serviceData.discountCode,
                     to_email: "momosalahy567@gmail.com"
                 }).then(function(response) {
                     console.log("تم إرسال البريد بنجاح!", response.status, response.text);
-                    // Send to WhatsApp
                     const whatsappMessage = createWhatsAppMessage(serviceData);
                     window.open(`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`, '_blank');
                     showConfirmationSection();
@@ -762,7 +763,6 @@
                     question: document.getElementById('consultationQuestion').value
                 };
 
-                // Validate WhatsApp number
                 if (!validatePhoneNumber(consultationData.whatsapp)) {
                     alert('رقم الواتساب غير صحيح. يرجى إدخال رقم يبدأ بـ 01 ويتكون من 11 رقمًا.');
                     submitButton.textContent = 'إرسال الاستشارة';
@@ -770,7 +770,6 @@
                     return;
                 }
 
-                // Send to EmailJS
                 emailjs.send("service_tn1vzso", "template_3qesckt", {
                     service_type: "استشارة مجانية",
                     customer_name: consultationData.name,
@@ -779,7 +778,6 @@
                     to_email: "momosalahy567@gmail.com"
                 }).then(function(response) {
                     console.log("تم إرسال البريد بنجاح!", response.status, response.text);
-                    // Send to WhatsApp
                     const whatsappMessage = createWhatsAppMessage(consultationData);
                     window.open(`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`, '_blank');
                     showConfirmationSection();
@@ -797,7 +795,10 @@
         function selectService(index) {
             selectedService = index;
             const cards = document.querySelectorAll('.service-card');
-            cards.forEach((card, i) => card.classList.toggle('selected', i + 1 === index));
+            cards.forEach((card, i) => {
+                const serviceIndex = [1, 2, 4, 3][i];
+                card.classList.toggle('selected', serviceIndex === index);
+            });
 
             if (index === 3) {
                 hideAllSections();
@@ -820,8 +821,8 @@
             const discountMessage = document.getElementById('serviceDiscountMessage');
             if (discountCode === validDiscountCode && selectedService !== 3) {
                 serviceDiscountApplied = true;
-                const discountAmount = servicePrices[selectedService] * 0.3; // 30% discount
-                const finalPrice = servicePrices[selectedService] * 0.7; // 70% of original price
+                const discountAmount = servicePrices[selectedService] * 0.3;
+                const finalPrice = servicePrices[selectedService] * 0.7;
                 discountMessage.textContent = `تم تطبيق خصم 30% (${discountAmount.toFixed(2)} جنيه) بنجاح!`;
                 discountMessage.className = 'discount-message discount-success';
                 document.getElementById('service-discount-summary').style.display = 'flex';
